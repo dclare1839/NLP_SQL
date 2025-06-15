@@ -63,5 +63,5 @@ if st.session_state.dataframes:
 
     st.write("Current Data Types for Columns:")
     for name in st.session_state.column_types.keys():
-        st.dataframe(st.session_state.column_types[name])
+        st.write(st.session_state.column_types[name])
 

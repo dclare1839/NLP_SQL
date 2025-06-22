@@ -2,6 +2,7 @@ import pandas as pd
 import streamlit as st
 import set_up_sql
 import ast
+import Gemini_API
 
 def get_prompt():
     prompt = st.text_input("What would you like to know?", key="prompt")
@@ -11,17 +12,24 @@ st.set_page_config(
     page_title="SQL Execution", page_icon="📊", layout="wide"
 )
 sql = set_up_sql.DatabaseManager()
+sql.date_type()
 #Create a connection to the database
 for name, df in st.session_state.dataframes.items():
-    sql.import_dtypes(st.session_state.column_types[name])
     sql.connect('sqlite:///NLP_SQL')
     sql.create_table(name, df)
 
-sql.check_table_list()
-sql.execute_query("Select customers.customer_id, orders.order_id from customers left join orders on customers.customer_id = orders.customer_id where customers.customer_id = '1';")
-
 st.write("Which Result you would like to want?")
 st.session_state.prompt_sentence = get_prompt()
+
+st.write(st.session_state.prompt_sentence)
+
+
+gemini = Gemini_API.geminiAPI() #Make an object
+gemini.configure() #Configure method
+
+query = gemini.create_sql_query(st.session_state.prompt_sentence)
+
+sql.execute_query(query)
 
 # def extract_select_statements(text):
 #     """

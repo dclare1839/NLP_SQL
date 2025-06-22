@@ -22,6 +22,15 @@ class DatabaseManager():
     def import_dtypes(self, column_types):
         self.dtype_dict = { column:self.sql_dict[types] for column, types in column_types.items()}
 
+    def date_type(self):
+        for name, dataframe in st.session_state.dataframes.items():
+            for col in dataframe.columns:
+                if 'date' in col.lower(): # 컬럼 이름에 'date' 문자열이 포함되어 있는지 확인 (대소문자 구분 없음)
+                    try:    
+                        dataframe[col] = pd.to_datetime(dataframe[col]).dt.date
+                        print(f"'{col}' 컬럼을 datetime 형식으로 변환했습니다.")
+                    except Exception as e:
+                        print(f"'{col}' 컬럼 변환 중 오류 발생: {e}")
 
 
     def connect(self,db_path):
@@ -30,19 +39,34 @@ class DatabaseManager():
 
     #Create SQLite Table
     def create_table(self, df_name, df):
+        # Dataframe to SQLite
         df.to_sql(
             name=df_name,
-            con=self.engine,
-            dtype=self.dtype_dict,           # 데이터 타입 지정
+            con=self.engine, 
             if_exists='replace',
             index=False
         )
     
+    def create_table2(self, df_name, df):
+        # Dataframe to SQLite
+        df.to_sql(
+            name=df_name,
+            con=self.engine,          #self.dtype_dict is based on the data_types was selected manually.
+            if_exists='replace',
+            index=False
+        )
+        with self.engine.connect() as connection:
+        # SQLite 마스터 테이블에서 테이블 정보 조회
+            self.result = connection.execute(text(f"PRAGMA table_info({df_name})")).fetchall()
+            st.write("\nSQLite에 생성된 'employees' 테이블의 실제 스키마:")
+            for row in self.result:
+                st.write(f"  Name: {row[1]}, Type: {row[2]}, NotNull: {row[3]}, PK: {row[5]}")
+
     def execute_query(self, response):
         response = str(response).strip()
-        st.write(response)
+        st.write(f'This is the {response}')
         with self.engine.connect() as conn:
-            self.result = conn.execute(text(f'{response}'))
+            self.result = conn.execute(text(f"{response}"))
             st.table(pd.DataFrame(self.result.all()))  # Display the result in Streamlit
         
     def check_table_list(self):

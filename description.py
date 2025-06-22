@@ -15,4 +15,5 @@ class Description:
         st.write(f"The file is '{key}'.")
         st.write("Data Head like below:")
         st.dataframe(value.head())
+        st.dataframe(value.dtypes)
     

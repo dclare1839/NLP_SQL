@@ -55,13 +55,7 @@ class DatabaseManager():
             if_exists='replace',
             index=False
         )
-        with self.engine.connect() as connection:
-        # SQLite 마스터 테이블에서 테이블 정보 조회
-            self.result = connection.execute(text(f"PRAGMA table_info({df_name})")).fetchall()
-            st.write("\nSQLite에 생성된 'employees' 테이블의 실제 스키마:")
-            for row in self.result:
-                st.write(f"  Name: {row[1]}, Type: {row[2]}, NotNull: {row[3]}, PK: {row[5]}")
-
+        
     def execute_query(self, response):
         response = str(response).strip()
         st.write(f'This is the {response}')

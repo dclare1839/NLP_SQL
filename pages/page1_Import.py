@@ -12,6 +12,9 @@ if st.session_state.uploaded_files:
     # Set up a variable which is for dataset.
     st.session_state.dataframes = {}
 
+    # Make a variable for the environment settings of description
+    st.session_state.prompt_settings = {}
+
     # Divide the files into separate dataframes
     for file in st.session_state.uploaded_files:
         st.write(f"Successfully imported! - {file.name}")
@@ -20,4 +23,9 @@ if st.session_state.uploaded_files:
         df = pd.read_csv(file)
         data_key = file.name.replace('.csv', '')
         st.session_state.dataframes[data_key] = df
+    
+    for name, dataframe in st.session_state.dataframes.items():
+        st.session_state.prompt_settings[name] = dataframe.columns
+
+
 

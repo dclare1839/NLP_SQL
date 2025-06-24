@@ -3,9 +3,7 @@ import streamlit as st
 import description # Description module
 
 # Prompt to some description which sql code you would like to generate
-def get_prompt():
-    prompt = st.text_input("What would you like to know?", key="prompt")
-    return prompt;
+
 
 # Set up the title of Streamlit app
 st.set_page_config(page_title="Data Analysis App", page_icon="📊", layout="wide")
@@ -27,13 +25,9 @@ st.markdown(
 )
 
 st.divider()
-st.session_state.prompt_sentence = get_prompt()
+
     
 
-# #Create a connection to the database
-# sql = set_up_sql.DatabaseManager()
-# sql.connect('sqlite:///cyber_security.db')
-# sql.create_table(df)
 
 # gemini = Gemini_API.geminiAPI(df.columns.tolist())  # Pass the column names to the geminiAPI instance
 # gemini.configure()

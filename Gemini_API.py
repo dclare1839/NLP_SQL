@@ -1,13 +1,12 @@
 import google.generativeai as genai
 import os
 import streamlit as st
-from IPython.display import Markdown, clear_output, display
-import json
 
 class geminiAPI:
     def __init__(self):
-        with open('/Users/aiden/Desktop/NLP_SQL_Outfolder/API_KEY.txt', 'r') as file:
-            self.APIK = file.read()
+        #with open('/Users/aiden/Desktop/NLP_SQL_Outfolder/API_KEY.txt', 'r') as file:
+        #    self.APIK = file.read()
+        self.APIK = st.session_state.gemini_api_key
         
         self.response = 'example response'  # Initialize response variable
         self.buffer = []  # Initialize buffer for streaming response
@@ -15,9 +14,10 @@ class geminiAPI:
     def configure(self): #Gemini API Connect
         genai.configure(api_key=self.APIK)
         self.model = genai.GenerativeModel('gemini-2.5-flash-preview-05-20')
+        #Gemini-2.5-flash version is available in Gemini API Free Tier version.
     
 
-    def create_sql_query(self, prompt, prompt_settings):
+    def generate_sql_query(self, prompt, prompt_settings):
         if prompt:  # Only generate if prompt is not empty
 
             # Creating an environment for database
@@ -38,6 +38,6 @@ class geminiAPI:
             for chunk in self.response:
                 self.buffer.append(chunk.text) # Extracting required results
             
-            self.result = ''.join(self.buffer)[7:-4]
+            self.result = ''.join(self.buffer)[7:-4] # Cleaning the result to get only SQL code
             return self.result
     

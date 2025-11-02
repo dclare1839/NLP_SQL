@@ -1,39 +1,61 @@
-NLP SQL Code Extraction System
-This document outlines the architecture and key components of a system designed to extract SQL code from natural language queries, leveraging Streamlit for the user interface, Gemini API for SQL generation, and SQLite with SQLAlchemy for data management.
+# 🧩 NLP → SQL Code Extraction System
 
-1. Overview
-The NLP SQL Code Extraction System allows users to upload CSV files, define their data schema, input natural language queries, and receive executable SQL code and query results. It aims to bridge the gap between business users and database interactions by enabling SQL generation through intuitive natural language.
+This project demonstrates an end-to-end **Natural Language to SQL Generation System**, designed to help users query structured datasets without writing SQL manually.  
+It connects uploaded CSV files to a lightweight database and generates SQL queries automatically through an AI model (Gemini API).
 
-2. System Components
-  I. User Interface (Streamlit Application)
-CSV File Upload: Provides an interface for users to upload CSV files, with initial data previews.
+---
 
-Data Schema Definition: Allows users to view column names and select appropriate data types for each column. Optional field for general dataset description.
+## 🚀 Overview
 
-Natural Language Query Input: A text field for users to input their desired query in natural language.
+The **NLP_SQL System** bridges the gap between **business users** and **database systems**.  
+By combining natural language processing (NLP) and SQL execution, it allows non-technical users to extract insights directly from their data.
 
-Results Display & Management: Shows the generated SQL code, query results in a table format, error messages, and options to download results (CSV/Excel) or submit additional queries.
+**Example:**  
+> “Show me the total sales by region in 2024” → Automatically converted into an executable SQL query.
 
-  II. Core Logic (Python Backend)
-Data Processing Module: Handles CSV parsing, conversion to Pandas DataFrames, and mapping Streamlit-selected data types to SQLAlchemy-compatible types.
+---
 
-Gemini API Integration: Prepares API calls with user queries, schema information, and descriptions. Processes API responses to extract generated SQL code and performs basic validation.
+## 🧱 System Architecture
 
-Database Management (SQLAlchemy & SQLite): Sets up SQLAlchemy engine/connection, creates in-memory or temporary SQLite databases, loads Pandas DataFrames into SQLite tables (respecting specified column types), executes generated SQL queries, and returns results as Pandas DataFrames.
+| Component | Description |
+|------------|-------------|
+| **Frontend (Streamlit)** | Web-based UI for CSV upload, schema setup, and query input |
+| **Backend (Python)** | Handles CSV parsing, schema inference, API communication, and database management |
+| **Database (SQLite + SQLAlchemy)** | In-memory database for running dynamically generated queries |
+| **AI Model (Gemini API)** | Converts natural language into syntactically valid SQL statements |
 
-  III. External Service (Gemini API)
-Natural Language Understanding & SQL Generation: Analyzes user queries and leverages provided schema and descriptions to generate optimal SQL queries.
+**Data Flow:**  
+`CSV Upload → Streamlit → Gemini API → SQL Generation → SQLite Query → Streamlit Output`
 
-Response Format: Returns the generated SQL code.
+---
 
-3. Data Flow
-The system follows a clear data flow:
-CSV Input → Streamlit → SQLite → Gemini API → SQL → SQLite → Streamlit Output
+## ⚙️ Core Functionalities
 
-4. User Experience
-The system is designed with a focus on:
-- Intuitive UI/UX
-- Clear error feedback
-- Fast result retrieval
+- 📂 **CSV File Upload & Preview**  
+  Users can upload CSV datasets and inspect the first few rows.
 
-In the conclusion, this tool is helping the people who is not able to use SQL to extract the required data.
+- 🧾 **Automatic Schema Detection**  
+  The system detects column names and lets users define data types.
+
+- 💬 **Natural Language Query Interface**  
+  Input your question in plain English — the system will interpret and translate it into SQL.
+
+- 🧠 **AI-driven SQL Generation**  
+  Uses the Gemini API to understand user intent and output optimized SQL code.
+
+- 📊 **Interactive Results**  
+  Displays query results in tables, with download options (CSV / Excel).
+
+---
+
+## 🧩 Example Workflow
+
+1. Upload a dataset: `sales_data.csv`
+2. Define column types (`date`, `region`, `sales_amount`)
+3. Input question:  
+   > “Show average monthly sales for each region”
+4. The system generates:  
+   ```sql
+   SELECT region, AVG(sales_amount) AS avg_sales
+   FROM sales_data
+   GROUP BY region;
